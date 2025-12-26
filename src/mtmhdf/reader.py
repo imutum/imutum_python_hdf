@@ -1,6 +1,4 @@
-import os
 import numpy as np
-import numpy.ma as ma
 
 from ._hdf4 import HDF4
 from ._hdf5 import HDF5
@@ -202,13 +200,3 @@ class HDF5Reader(TemplateReader):
     def infos(self) -> dict:
         return HDF5.infos(self.fp)
 
-
-def Reader(data_file: str, *args, **kwargs) -> TemplateReader:
-    _, ext = os.path.splitext(data_file)
-    ext = ext.lower()
-    if ext in ['.nc', '.h5', '.he5', '.hdf5']:
-        return HDF5Reader(data_file, *args, **kwargs)
-    elif ext in ['.hdf', '.hdf4']:
-        return HDF4Reader(data_file, *args, **kwargs)
-    else:
-        raise ValueError(f"Unsupported file extension: {ext}")
