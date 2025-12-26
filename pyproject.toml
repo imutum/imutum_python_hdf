@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=40.8.0", "wheel", "setuptools_scm[toml]>=6.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mtmhdf"
+description = "imutum's packages for HDF"
+readme = "README.md"
+license = { file = "LICENSE" }
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3.11",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "pyhdf >= 0.10.5",
+    "netcdf4 >= 1.6.5",
+    "numpy >= 1.26.0",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+
+[tool.setuptools_scm]
