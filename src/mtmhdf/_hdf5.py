@@ -3,7 +3,7 @@ from netCDF4 import Dataset, Variable
 class HDF5(Dataset):
     @staticmethod
     def open(file_path:str, mode='r', *args, **kwargs):
-        return Dataset(file_path, mode=HDF5.OPENMODES[mode], *args, **kwargs)
+        return Dataset(file_path, mode=mode, *args, **kwargs)
 
     @staticmethod
     def read(fp:Dataset, name:str) -> Variable:
@@ -17,7 +17,7 @@ class HDF5(Dataset):
     def dpinfo(dp: Variable) -> dict:
         info_dict = dp.__dict__
         info_dict.update({
-            "dataset_name": dp.group().path + "/" + dp.name,
+            "dataset_name": (dp.group().path + "/" + dp.name).replace("//", "/"),
             "dataset_dims": dp.shape,
             "dataset_type": dp.datatype.name
         })

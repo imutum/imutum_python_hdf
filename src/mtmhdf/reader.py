@@ -2,10 +2,10 @@ import os
 import numpy as np
 import numpy.ma as ma
 
-from _hdf4 import HDF4
-from _hdf5 import HDF5
+from ._hdf4 import HDF4
+from ._hdf5 import HDF5
 
-from _utils import int2binarystring, bitoffset, scale, mask
+from ._utils import int2binarystring, bitoffset, scale, mask
 
 
 class TemplateData:
