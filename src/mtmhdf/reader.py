@@ -1,7 +1,13 @@
 import numpy as np
 
-from ._hdf4 import HDF4
-from ._hdf5 import HDF5
+try:
+    from ._hdf4 import HDF4
+except ImportError:
+    HDF4 = None
+try:
+    from ._hdf5 import HDF5
+except ImportError:
+    HDF5 = None
 
 from ._utils import int2binarystring, bitoffset, scale, mask
 
