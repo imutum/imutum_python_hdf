@@ -63,23 +63,25 @@ class TileGridModisSin:
     ftopright: str = field(init=False, default=None)
     fbottomleft: str = field(init=False, default=None)
     fbottomright: str = field(init=False, default=None)
+    do_grid_surround: bool = field(init=True, default=True)
 
     def __post_init__(self):
         if not isinstance(self.gcenter, str):
             raise ValueError("gcenter must be a string")
-        self.gleft = get_grid_hv_surround(self.gcenter, "left")
-        self.gright = get_grid_hv_surround(self.gcenter, "right")
-        self.gtop = get_grid_hv_surround(self.gcenter, "top")
-        self.gbottom = get_grid_hv_surround(self.gcenter, "bottom")
-        self.gtopleft = get_grid_hv_surround(self.gcenter, "topleft")
-        self.gtopright = get_grid_hv_surround(self.gcenter, "topright")
-        self.gbottomleft = get_grid_hv_surround(self.gcenter, "bottomleft")
-        self.gbottomright = get_grid_hv_surround(self.gcenter, "bottomright")
-        if self.fcenter is not None:
-            if not Path(self.fcenter).exists():
-                raise FileNotFoundError(f"File {self.fcenter} not found")
-            if self.gcenter.lower() in (Path(self.fcenter).name).lower():
-                self.replace_hv_surround()
+        if self.do_grid_surround:
+            self.gleft = get_grid_hv_surround(self.gcenter, "left")
+            self.gright = get_grid_hv_surround(self.gcenter, "right")
+            self.gtop = get_grid_hv_surround(self.gcenter, "top")
+            self.gbottom = get_grid_hv_surround(self.gcenter, "bottom")
+            self.gtopleft = get_grid_hv_surround(self.gcenter, "topleft")
+            self.gtopright = get_grid_hv_surround(self.gcenter, "topright")
+            self.gbottomleft = get_grid_hv_surround(self.gcenter, "bottomleft")
+            self.gbottomright = get_grid_hv_surround(self.gcenter, "bottomright")
+            if self.fcenter is not None:
+                if not Path(self.fcenter).exists():
+                    raise FileNotFoundError(f"File {self.fcenter} not found")
+                if self.gcenter.lower() in (Path(self.fcenter).name).lower():
+                    self.replace_hv_surround()
     
     def replace_hv_surround(self):
         fcenter = Path(self.fcenter).name
