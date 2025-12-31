@@ -82,7 +82,7 @@ class Grid2DReaderData:
         return res_data if res_data is not None else np.array([]).reshape(target_shape)
 
 class Grid2DReader:
-    def __init__(self, path:str, grid_format:str=None, do_grid_surround:bool=True, **kwargs):
+    def __init__(self, path:str, grid_format:str=None, grid_size:int=1200, do_grid_surround:bool=True, **kwargs):
         self.path = path
         self.grid_format = grid_format if grid_format is not None else "modis_sin"
         self.file_format = inferrence_format(path)
@@ -97,7 +97,12 @@ class Grid2DReader:
         
         match self.grid_format:
             case "modis_sin" | "MODIS_SIN":
-                self.tile_grid = TileGridModisSin(gcenter=self.hv, fcenter=path, do_grid_surround=do_grid_surround)
+                self.tile_grid = TileGridModisSin(
+                    gcenter=self.hv, 
+                    fcenter=path, 
+                    gsize=grid_size, 
+                    do_grid_surround=do_grid_surround
+                )
             case _:
                 raise ValueError(f"Unsupported grid format: {self.grid_format}")
         
