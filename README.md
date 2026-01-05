@@ -1,6 +1,6 @@
 # mtmhdf
 
-`mtmhdf` 是一个功能强大的 Python 库，用于高效处理 HDF4 和 HDF5 (包括 NetCDF) 格式的科学数据。它不仅提供了统一的读取接口，还针对 MODIS 正弦投影 (Sinusoidal) 等网格数据提供了**无缝跨图幅读取**的高级功能。
+`mtmhdf` 是一个 Python 二次封装 库，用于高效处理 HDF4 (pyhdf) 和 HDF5 (netCDF4) 格式的科学数据。它不仅提供了统一的读取接口，还针对 网格数据 (MODIS 正弦投影 (Sinusoidal) 等) 提供了**无缝跨图幅读取**的高级功能。
 
 ## 核心特性
 
