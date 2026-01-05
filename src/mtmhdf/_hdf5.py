@@ -1,4 +1,6 @@
 from netCDF4 import Dataset, Variable
+import numpy as np
+
 
 class HDF5(Dataset):
     @staticmethod
@@ -50,3 +52,59 @@ class HDF5(Dataset):
         else:
             return HDF5._jump(subnode_fp, subnode_path)
         
+
+    @staticmethod
+    def write(fp: Dataset, data:np.ndarray|np.ma.MaskedArray, varname:str, dimensions:tuple[str, ...], datatype:str = None, scale_factor=1.0, add_offset=0.0, **kwargs):
+        # convert data to numpy.ma.MaskedArray
+        if isinstance(data, np.ma.MaskedArray):
+            xm = data
+        elif isinstance(data, np.ndarray):
+            xm = np.ma.masked_invalid(data)
+        else:
+            raise ValueError("data must be a numpy.ndarray or numpy.ma.MaskedArray")
+
+        # check dimensions
+        shape = xm.shape
+        if len(dimensions) != len(shape):
+            raise ValueError("dimensions (tuple) and array shape (tuple) must have the same length")
+        for i, dimension in enumerate(dimensions):
+            if dimension not in fp.dimensions:
+                fp.createDimension(dimension, shape[i])
+            else:
+                if (dsize := shape[i]) != (fsize:=fp.dimensions[dimension].size):
+                    raise ValueError(f"dimensions ({dimension}: {dsize}) must have the same size in the file ({dimension}: {fsize})")
+
+        # check datatype
+        if datatype is None:
+            datatype = xm.dtype
+        else:
+            # 将 datatype (如 'i2', 'int16') 转换为 numpy dtype 对象
+            dt = np.dtype(datatype)
+            
+            # 只有目标类型是整数时，才需要考虑截断（防止 Overflow）
+            if np.issubdtype(dt, np.integer):
+                # 1. 获取目标整数类型的理论最大/最小值
+                info = np.iinfo(dt)
+                i_min, i_max = info.min, info.max
+                print(i_min, i_max)
+                              
+                # 3. 转换为物理值的范围
+                #    公式: Physical = Integer * scale + offset
+                lim1 = i_min * scale_factor + add_offset
+                lim2 = i_max * scale_factor + add_offset
+                xm = np.ma.masked_outside(xm, lim1, lim2)
+
+        # create variable
+        v = fp.createVariable(varname=varname, datatype=datatype, dimensions=dimensions, **kwargs)
+
+        # set scale_factor and add_offset
+        v.scale_factor = scale_factor
+        v.add_offset = add_offset
+        v.set_auto_maskandscale(True)
+
+        # write data
+        xm.data[xm.mask] = 0 # fill invalid values with 0
+        xm.fill_value = 0
+        v[:] = xm
+
+        return v
